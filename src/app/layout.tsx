@@ -11,6 +11,7 @@ import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/layout/JsonLd";
 import { Navbar } from "@/components/layout/Navbar";
 import { MotionProvider } from "@/components/ui/MotionProvider";
+import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 
 const figtree = localFont({
   src: "./fonts/figtree-latin-wght-normal.woff2",
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
         </MotionProvider>
         <JsonLd />
+        <FloatingWhatsApp />
       </body>
     </html>
   );
