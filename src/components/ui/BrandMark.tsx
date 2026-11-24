@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
@@ -21,6 +20,15 @@ export function ToothGlyph({ className }: { className?: string }) {
   );
 }
 
+/** "Dr. Muhammad Siraj" -> "Dr. Siraj". Used on small screens so the header never overflows. */
+function getShortName(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length <= 2) return fullName.trim();
+  const hasTitle = /^dr\.?$/i.test(parts[0] ?? "");
+  const last = parts[parts.length - 1] ?? fullName;
+  return hasTitle ? `${parts[0]} ${last}` : last;
+}
+
 export function BrandMark({
   tone = "dark",
   className,
@@ -29,12 +37,14 @@ export function BrandMark({
   className?: string;
 }) {
   const isLight = tone === "light";
+  const fullName = siteConfig.doctor.name;
+  const shortName = getShortName(fullName);
 
   return (
     <Link
       href="/"
-      aria-label={`${siteConfig.name} home`}
-      className={cn("group inline-flex items-center gap-2", className)}
+      aria-label={`${fullName} home`}
+      className={cn("group inline-flex min-w-0 items-center gap-2", className)}
     >
       {siteConfig.logo ? (
         <Image
@@ -49,27 +59,29 @@ export function BrandMark({
         <span
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-xl",
-            isLight ? "bg-white text-primary" : "bg-primary text-white"
+            isLight ? "bg-white text-primary" : "bg-primary text-white",
           )}
         >
           <ToothGlyph className="size-6" />
         </span>
       )}
 
-      <span className="flex flex-col gap-1">
+      <span className="flex min-w-0 flex-col gap-1">
         <span
           className={cn(
-            "font-display text-base font-bold uppercase leading-none tracking-tight sm:text-lg",
-            isLight ? "text-white" : "text-ink"
+            "truncate font-display text-base font-bold uppercase leading-none tracking-tight sm:text-lg",
+            isLight ? "text-white" : "text-ink",
           )}
         >
-          {siteConfig.doctor.name}
+          {/* Short name on phones, full name from the sm breakpoint up */}
+          <span className="sm:hidden">{shortName}</span>
+          <span className="hidden sm:inline">{fullName}</span>
         </span>
 
         <span
           className={cn(
-            "text-[10px] font-medium uppercase leading-none tracking-wider",
-            isLight ? "text-white/70" : "text-muted"
+            "truncate text-[10px] font-medium uppercase leading-none tracking-wider",
+            isLight ? "text-white/70" : "text-muted",
           )}
         >
           General Dentist · Dental Surgeon
